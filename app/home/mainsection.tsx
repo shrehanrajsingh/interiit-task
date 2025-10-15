@@ -1,10 +1,13 @@
 import { Roboto } from "next/font/google";
-import { FaDotCircle } from "react-icons/fa";
+import { FaDotCircle, FaThumbsUp } from "react-icons/fa";
 import {
   FaAccessibleIcon,
+  FaBookmark,
+  FaComment,
   FaMagnifyingGlass,
   FaOptinMonster,
   FaPlus,
+  FaThumbsDown,
 } from "react-icons/fa6";
 
 const robotoFont = Roboto({
@@ -27,7 +30,7 @@ export default function MainSection() {
       </div>
 
       {/* main content div */}
-      <div className="grow overflow-y-auto max-h-[87vh] scrollbar-hide min-h-0 bg-gray-800 mt-8 rounded-lg flex-shrink overflow-x-hidden">
+      <div className="grow py-4 overflow-y-auto max-h-[87vh] scrollbar-hide min-h-0 bg-gray-800 mt-8 rounded-lg flex-shrink overflow-x-hidden">
         {/* whats on your mind */}
         <div className="flex justify-center w-full py-2 px-8">
           <div className="w-full bg-black/30 px-4 py-4 flex items-center gap-4 rounded-lg">
@@ -101,6 +104,53 @@ export default function MainSection() {
             </p>
 
             <div className="w-full h-1 border-b-2 border-b-gray-700 mt-6"></div>
+
+            <div className="flex items-center justify-between mt-4 px-2">
+              <div className="flex items-center space-x-4">
+                <button className="flex items-center gap-2 text-gray-300 py-2 px-4 rounded-lg hover:bg-gray-800 transition-all duration-100 cursor-pointer">
+                  <div className="bg-gray-700 p-2 rounded-full group-hover:bg-emerald-500/20 transition-all duration-300 shadow-lg">
+                    <FaThumbsUp className="text-lg group-hover:scale-110 transition-transform" />
+                  </div>
+                  <span className="text-sm font-medium group-hover:font-bold">
+                    Like
+                  </span>
+                  <span className="text-xs bg-gray-700 group-hover:bg-emerald-500/20 px-2 py-0.5 rounded-md ml-1 transition-all">
+                    24
+                  </span>
+                </button>
+
+                <button className="flex items-center gap-2 text-gray-300 py-2 px-4 rounded-lg hover:bg-gray-800 cursor-pointer">
+                  <div className="bg-gray-700 p-2 rounded-full group-hover:bg-red-500/20 transition-all duration-300 shadow-lg">
+                    <FaThumbsDown className="text-lg group-hover:scale-110 group-hover:rotate-180 transition-transform" />
+                  </div>
+                  <span className="text-sm font-medium group-hover:font-bold">
+                    Dislike
+                  </span>
+                  <span className="text-xs bg-gray-700 px-2 py-0.5 rounded-md ml-1">
+                    3
+                  </span>
+                </button>
+
+                <button className="flex items-center gap-2 text-gray-300 py-2 px-4 rounded-lg hover:bg-gray-800 cursor-pointer transition-all duration-100">
+                  <div className="bg-gray-700 p-2 rounded-full">
+                    <FaComment className="text-lg group-hover:scale-110 transition-transform" />
+                  </div>
+                  <span className="text-sm font-medium group-hover:font-bold">
+                    Comment
+                  </span>
+                  <span className="text-xs bg-gray-700 group-hover:bg-blue-500/20 px-2 py-0.5 rounded-md ml-1 transition-all">
+                    7
+                  </span>
+                </button>
+              </div>
+
+              <button className="flex items-center gap-2 text-gray-300 py-2 px-4 rounded-lg group relative overflow-hidden hover:bg-gray-800 cursor-pointer">
+                <div className="bg-gray-700 p-2 rounded-full transition-all duration-300 shadow-lg">
+                  <FaBookmark className="text-lg" />
+                </div>
+                <span className="text-sm font-medium">Save</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
