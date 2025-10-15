@@ -102,7 +102,7 @@ export default function Signup() {
               <p className="text-gray-400">
                 Already have an account?{" "}
                 <Link
-                  href={"/login"}
+                  href={"login"}
                   className="text-indigo-500 hover:text-indigo-400 font-medium transition-colors duration-200 ml-1"
                 >
                   Login
@@ -116,7 +116,7 @@ export default function Signup() {
       <div className="col-span-3">
         <video
           className="w-full h-full object-cover opacity-40"
-          src="/login-bg.mp4"
+          src="/signup-bg.mp4"
           autoPlay
           muted
           playsInline
