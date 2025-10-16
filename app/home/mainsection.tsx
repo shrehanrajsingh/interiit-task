@@ -1,3 +1,5 @@
+"use client";
+
 import { Roboto } from "next/font/google";
 import { FaDotCircle, FaThumbsUp } from "react-icons/fa";
 import {
@@ -9,12 +11,19 @@ import {
   FaPlus,
   FaThumbsDown,
 } from "react-icons/fa6";
+import { useState } from "react";
+
+import UserComments from "../../data/comments.json";
+import UserData from "../../data/users.json";
+import CommentSection from "./commentsection";
 
 const robotoFont = Roboto({
   subsets: ["latin"],
 });
 
 export default function MainSection() {
+  const [showCM, setShowCommentModal] = useState<boolean>(false);
+
   return (
     <div className="h-full flex flex-col overflow-hidden">
       <div className="px-8 pt-4 flex items-center flex-shrink-0">
@@ -28,6 +37,16 @@ export default function MainSection() {
           autoComplete="off"
         />
       </div>
+
+      {/* comment modal */}
+      {showCM && (
+        <CommentSection
+          isOpen={showCM}
+          onClose={() => setShowCommentModal(false)}
+          comments={UserComments}
+          users={UserData}
+        />
+      )}
 
       {/* main content div */}
       <div className="grow py-4 overflow-y-auto max-h-[87vh] scrollbar-hide min-h-0 bg-gray-800 mt-8 rounded-lg flex-shrink overflow-x-hidden">
@@ -131,7 +150,10 @@ export default function MainSection() {
                   </span>
                 </button>
 
-                <button className="flex items-center gap-2 text-gray-300 py-2 px-4 rounded-lg hover:bg-gray-800 cursor-pointer transition-all duration-100">
+                <button
+                  onClick={() => setShowCommentModal(true)}
+                  className="flex items-center gap-2 text-gray-300 py-2 px-4 rounded-lg hover:bg-gray-800 cursor-pointer transition-all duration-100"
+                >
                   <div className="bg-gray-700 p-2 rounded-full">
                     <FaComment className="text-lg group-hover:scale-110 transition-transform" />
                   </div>

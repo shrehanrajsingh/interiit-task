@@ -33,6 +33,9 @@ import {
   FaFileContract,
 } from "react-icons/fa";
 
+import UserData from "../../data/users.json";
+import Image from "next/image";
+
 const arimaFont = Arima({
   subsets: ["latin"],
 });
@@ -64,7 +67,7 @@ export default function RightBar() {
           type="search"
           name="name_search"
           id="id_search"
-          className="pl-12 py-2 w-4/5 text-xl outline-none rounded-lg bg-gray-800"
+          className="pl-12 py-2 w-full mr-4 text-xl outline-none rounded-lg bg-gray-800"
           placeholder="Search"
           autoComplete="off"
         />
@@ -140,13 +143,18 @@ export default function RightBar() {
         <div className="mt-4 px-8 flex flex-col gap-3">
           {["Cat-Cool", "Stupid-Steel", "Rich-Runner"].map((i, key) => (
             <div
-              className="flex items-center gap-2 text-gray-300 cursor-pointer"
+              className="flex items-center gap-4 text-gray-300 cursor-pointer"
               key={key}
             >
-              <div className="bg-gray-800 px-4 py-3 text-2xl rounded-md flex items-center">
-                <FaUser />
-              </div>
-              <h1 className="font-bold">{i}</h1>
+              <div
+                className="px-4 py-3 text-2xl rounded-md flex items-center h-12 w-12"
+                style={{
+                  backgroundImage: `url(${UserData[key].avatar})`,
+                  backgroundRepeat: "no-repeat",
+                  backgroundSize: "cover",
+                }}
+              ></div>
+              <h1 className="font-bold text-xl">{i}</h1>
             </div>
           ))}
 

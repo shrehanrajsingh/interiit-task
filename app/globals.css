@@ -11,6 +11,16 @@
   scrollbar-width: none;  /* Firefox */
 }
 
+/* Animation for fading in elements */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-in-out forwards;
+}
+
 /* :root {
   --background: #ffffff;
   --foreground: #171717;
