@@ -16,7 +16,7 @@ export default function Login() {
           <h1 className={`text-4xl font-bold text-gray-300`}>
             Welcome to Creddit
           </h1>
-          <h6 className="mt-2 text-gray-400">Login your account</h6>
+          <h6 className="mt-2 text-gray-400">Login to your account</h6>
 
           <form className="mt-8 space-y-6" onSubmit={(e) => e.preventDefault()}>
             <div className="space-y-2">
@@ -112,7 +112,7 @@ export default function Login() {
               <p className="text-gray-400">
                 Don&apos;t have an account?{" "}
                 <Link
-                  href={"#"}
+                  href={"signup"}
                   className="text-emerald-500 hover:text-emerald-400 font-medium transition-colors duration-200 ml-1"
                 >
                   Sign up

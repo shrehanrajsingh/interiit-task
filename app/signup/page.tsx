@@ -46,7 +46,7 @@ export default function Signup() {
                 type="email"
                 id="input_email"
                 className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 placeholder-gray-500"
-                placeholder="Enter your username"
+                placeholder="Enter your email"
                 autoComplete="off"
               />
             </div>
@@ -102,7 +102,7 @@ export default function Signup() {
               <p className="text-gray-400">
                 Already have an account?{" "}
                 <Link
-                  href={"/login"}
+                  href={"login"}
                   className="text-indigo-500 hover:text-indigo-400 font-medium transition-colors duration-200 ml-1"
                 >
                   Login
@@ -116,7 +116,7 @@ export default function Signup() {
       <div className="col-span-3">
         <video
           className="w-full h-full object-cover opacity-40"
-          src="/login-bg.mp4"
+          src="/signup-bg.mp4"
           autoPlay
           muted
           playsInline
