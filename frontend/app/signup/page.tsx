@@ -56,10 +56,12 @@ export default function Signup() {
   };
 
   return (
-    <div className="w-full h-screen overflow-hidden bg-black text-white grid grid-cols-5">
-      <div className="col-span-2 flex justify-center items-center w-full h-full">
-        <div className={`h-2/3 w-2/3 ${robotoFont.className}`}>
-          <h1 className={`text-4xl font-bold text-gray-300`}>
+    <div className="w-full h-screen overflow-hidden bg-black text-white md:grid md:grid-cols-5">
+      <div className="md:col-span-2 flex justify-center items-center w-full h-full px-6 md:px-0">
+        <div
+          className={`w-full max-w-md md:w-2/3 ${robotoFont.className} py-8 md:py-0`}
+        >
+          <h1 className={`text-3xl md:text-4xl font-bold text-gray-300`}>
             Welcome to Creddit
           </h1>
           <h6 className="mt-2 text-gray-400">Create your account</h6>
@@ -83,7 +85,7 @@ export default function Signup() {
                 id="input_email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 placeholder-gray-500"
+                className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 placeholder-gray-500 text-base md:text-sm"
                 placeholder="Enter your email"
                 autoComplete="email"
                 required
@@ -102,7 +104,7 @@ export default function Signup() {
                 id="input_password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 placeholder-gray-500"
+                className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 placeholder-gray-500 text-base md:text-sm"
                 placeholder="Enter your password"
                 required
               />
@@ -120,12 +122,14 @@ export default function Signup() {
                 id="input_confirm_password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 placeholder-gray-500"
+                className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 placeholder-gray-500 text-base md:text-sm"
                 placeholder="Confirm your password"
                 required
               />
               {passwordError && (
-                <p className="text-red-400 text-sm mt-1">{passwordError}</p>
+                <p className="text-red-400 text-sm mt-1 md:text-xs">
+                  {passwordError}
+                </p>
               )}
             </div>
 
@@ -162,24 +166,24 @@ export default function Signup() {
                 type="button"
                 className="p-3 cursor-pointer bg-gray-800 hover:bg-gray-700 rounded-full transition-all duration-200 transform hover:scale-105"
               >
-                <FaApple className="text-xl" />
+                <FaApple className="text-xl sm:text-lg" />
               </button>
               <button
                 type="button"
                 className="p-3 cursor-pointer bg-gray-800 hover:bg-gray-700 rounded-full transition-all duration-200 transform hover:scale-105"
               >
-                <FaGoogle className="text-xl" />
+                <FaGoogle className="text-xl sm:text-lg" />
               </button>
               <button
                 type="button"
                 className="p-3 cursor-pointer bg-gray-800 hover:bg-gray-700 rounded-full transition-all duration-200 transform hover:scale-105"
               >
-                <FaFacebook className="text-xl" />
+                <FaFacebook className="text-xl sm:text-lg" />
               </button>
             </div>
 
             <div className="text-center pt-4">
-              <p className="text-gray-400">
+              <p className="text-gray-400 text-sm sm:text-base">
                 Already have an account?{" "}
                 <Link
                   href={"login"}
@@ -193,7 +197,7 @@ export default function Signup() {
         </div>
       </div>
 
-      <div className="col-span-3">
+      <div className="hidden md:block md:col-span-3 absolute md:relative inset-0 -z-10 md:z-0">
         <video
           className="w-full h-full object-cover opacity-40"
           src="/signup-bg.mp4"
