@@ -71,8 +71,8 @@ type CommentWithUser = Comment & {
 interface CommentProps {
   isOpen: boolean;
   onClose: () => void;
-  comments: any[];
-  users: any[];
+  comments: Comment[];
+  users: User[];
 }
 
 export default function CommentSection({

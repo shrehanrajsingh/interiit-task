@@ -14,6 +14,19 @@ import type { User, TokenResponse } from "../types/auth";
 import { useRouter } from "next/navigation";
 import { AxiosResponse, AxiosError } from "axios";
 
+// Type for API errors
+interface ApiError extends Error {
+  response?: {
+    data?: {
+      detail?: string;
+      [key: string]: unknown;
+    };
+    status?: number;
+    statusText?: string;
+    headers?: Record<string, string>;
+  };
+}
+
 type AuthContextType = {
   user: User | null;
   loading: boolean;
@@ -141,14 +154,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         });
 
         router.push("/home");
-      } catch (userError: any) {
-        console.error("Error fetching user details:", userError);
+      } catch (userError) {
+        const error = userError as ApiError;
+        console.error("Error fetching user details:", error);
         setError("Authentication successful but failed to fetch user details.");
         setAccessToken(null);
       }
-    } catch (e: any) {
-      console.error("Login error:", e);
-      setError(e.response?.data?.detail || "Login failed. Please try again.");
+    } catch (e) {
+      const error = e as ApiError;
+      console.error("Login error:", error);
+      setError(
+        error.response?.data?.detail || "Login failed. Please try again."
+      );
       setUser(null);
       setAccessToken(null);
     } finally {
@@ -172,9 +189,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       await authApi.register(email, password);
       await login(email, password);
-    } catch (e: any) {
+    } catch (e) {
+      const error = e as ApiError;
       setError(
-        e.response?.data?.detail || "Registration failed. Please try again."
+        error.response?.data?.detail || "Registration failed. Please try again."
       );
       setLoading(false);
     }

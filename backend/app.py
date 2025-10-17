@@ -182,3 +182,8 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:
 @app.get("/users/me", response_model=UserOut)
 def read_users_me(current_user: UserDB = Depends(get_current_user)):
     return current_user
+
+
+@app.get("/health")
+def health_check():
+    return {"status": "healthy", "timestamp": datetime.now().isoformat()}

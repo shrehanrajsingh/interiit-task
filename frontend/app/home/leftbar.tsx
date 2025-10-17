@@ -56,13 +56,25 @@ export default function LeftBar() {
         {expanded && (
           <div className="ml-8 mt-2 flex flex-col gap-1">
             {[
-              ["Help Center", <FaQuestion className="text-sm" />],
-              ["Support Inbox", <FaInbox className="text-sm" />],
+              [
+                "Help Center",
+                <FaQuestion key="help-center" className="text-sm" />,
+              ],
+              [
+                "Support Inbox",
+                <FaInbox key="support-inbox" className="text-sm" />,
+              ],
               [
                 "Report a Problem",
-                <FaExclamationTriangle className="text-sm" />,
+                <FaExclamationTriangle
+                  key="report-problem"
+                  className="text-sm"
+                />,
               ],
-              ["Terms and Conditions", <FaFileContract className="text-sm" />],
+              [
+                "Terms and Conditions",
+                <FaFileContract key="terms" className="text-sm" />,
+              ],
             ].map((item, key) => (
               <Link
                 href={"#"}
@@ -104,11 +116,15 @@ export default function LeftBar() {
       {/* menu */}
       <div className="mt-6 md:mt-10 w-full flex flex-col gap-1 px-2">
         {[
-          ["Home", <FaHome className="text-lg" />, "/home"],
-          ["Profile", <FaUser className="text-lg" />, "/profile"],
-          ["Events", <FaCalendar className="text-lg" />, "#"],
-          ["Saved", <FaBookmark className="text-lg" />, "#"],
-          ["Settings", <FaGear className="text-lg" />, "#"],
+          ["Home", <FaHome key="home-icon" className="text-lg" />, "/home"],
+          [
+            "Profile",
+            <FaUser key="profile-icon" className="text-lg" />,
+            "/profile",
+          ],
+          ["Events", <FaCalendar key="events-icon" className="text-lg" />, "#"],
+          ["Saved", <FaBookmark key="saved-icon" className="text-lg" />, "#"],
+          ["Settings", <FaGear key="settings-icon" className="text-lg" />, "#"],
         ].map((item, key) => (
           <Link
             href={item[2] as string}

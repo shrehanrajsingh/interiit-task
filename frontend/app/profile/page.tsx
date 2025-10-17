@@ -7,6 +7,7 @@ import Link from "next/link";
 import { FaArrowLeft, FaSpinner } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { authApi } from "../lib/api";
+import { AxiosError } from "axios";
 
 interface UserProfile {
   id: number;
@@ -26,17 +27,22 @@ export default function Profile() {
         const response = await authApi.getProfile();
         setProfile(response.data as SetStateAction<UserProfile | null>);
         setError(null);
-      } catch (err: any) {
-        console.error("Profile fetch error:", err);
+      } catch (err) {
+        const axiosError = err as AxiosError;
+        console.error("Profile fetch error:", axiosError);
 
         console.error("Error details:", {
-          status: err.response?.status,
-          statusText: err.response?.statusText,
-          data: err.response?.data,
-          headers: err.response?.headers,
+          status: axiosError.response?.status,
+          statusText: axiosError.response?.statusText,
+          data: axiosError.response?.data,
+          headers: axiosError.response?.headers,
         });
 
-        setError(err.response?.data?.detail || "Failed to load profile data");
+        // Type assertion for response data
+        const responseData = axiosError.response?.data as
+          | { detail?: string }
+          | undefined;
+        setError(responseData?.detail || "Failed to load profile data");
       } finally {
         setLoading(false);
       }

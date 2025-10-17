@@ -28,63 +28,13 @@ This project demonstrates a modern full-stack application that integrates a Next
 
 #### Production Build
 
-1. Build and run the Docker containers:
+1. Build and run the Docker container:
 
 ```bash
-# Run both frontend and backend using the build script (resolves package-lock issues)
-./docker-build.sh prod
-
-# Or using the standard script (if package-lock is in sync)
-./docker.sh prod
-
-# Or using Docker Compose directly
 docker-compose up --build
 ```
 
-If you encounter package.json vs package-lock.json mismatch errors, use:
-
-```bash
-# Force rebuild without cache
-./docker.sh rebuild
-```
-
-2. Access the frontend at http://localhost:3000
-3. Access the backend API at http://localhost:8000
-
-#### Development Mode
-
-1. Run the development containers:
-
-```bash
-# Run both in development mode
-./docker.sh dev
-
-# Or using Docker Compose directly
-docker-compose -f docker-compose.dev.yml up --build
-```
-
-2. Access the frontend with hot-reloading at http://localhost:3000
-3. Access the backend API with auto-reload at http://localhost:8000
-
-#### Other Docker Commands
-
-```bash
-# Start only the backend
-./docker.sh backend
-
-# Start only the frontend
-./docker.sh frontend
-
-# Stop all containers
-./docker.sh down
-
-# Clean up Docker resources
-./docker.sh clean
-```
-
-### Manual Setup
-
-```
+2. Access the application at http://localhost:3000
 
 #### Development Mode
 

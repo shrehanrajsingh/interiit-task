@@ -162,15 +162,6 @@ export default function MainSection() {
                   </span>
                 </button>
               </div>
-
-              <button className="flex items-center gap-2 text-gray-300 py-2 px-3 sm:px-4 rounded-lg hover:bg-gray-800 transition-all duration-100 group">
-                <div className="bg-gray-700 p-1.5 sm:p-2 rounded-full group-hover:bg-purple-500/20 transition-all duration-300 shadow-lg">
-                  <FaBookmark className="text-sm sm:text-lg group-hover:scale-110 transition-transform" />
-                </div>
-                <span className="text-xs sm:text-sm font-medium group-hover:font-bold">
-                  Save
-                </span>
-              </button>
             </div>
           </motion.div>
         </div>
