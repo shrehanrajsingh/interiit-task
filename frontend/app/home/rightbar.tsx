@@ -80,9 +80,9 @@ export default function RightBar() {
 
         <div className="mt-4 px-8 flex flex-col gap-3">
           {[
-            ["Steam Financials", <FaSteam />],
-            ["Microsoft Finance", <FaMicrosoft />],
-            ["Apple Stocks Daily (ASD)", <FaApple />],
+            ["Steam Financials", <FaSteam key="steam-icon" />],
+            ["Microsoft Finance", <FaMicrosoft key="microsoft-icon" />],
+            ["Apple Stocks Daily (ASD)", <FaApple key="apple-icon" />],
           ].map((i, key) => (
             <div
               className="flex items-center gap-2 text-gray-300 cursor-pointer"
@@ -111,9 +111,9 @@ export default function RightBar() {
 
         <div className="mt-4 px-8 flex flex-col gap-3">
           {[
-            ["Talk Shit Go", <FaCubesStacked />],
-            ["Finance 101", <FaBook />],
-            ["The Expensive Podcast", <FaDollarSign />],
+            ["Talk Shit Go", <FaCubesStacked key="cubes-icon" />],
+            ["Finance 101", <FaBook key="book-icon" />],
+            ["The Expensive Podcast", <FaDollarSign key="dollar-icon" />],
           ].map((i, key) => (
             <div
               className="flex items-center gap-2 text-gray-300 cursor-pointer"

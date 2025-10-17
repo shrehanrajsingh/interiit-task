@@ -1,0 +1,14 @@
+# Include any files or directories that you don't want to be copied to your
+# container here (e.g., local build artifacts, temporary files, etc.).
+.git
+.github
+.next
+.vscode
+coverage
+docker-compose.yml
+Dockerfile
+.dockerignore
+.gitignore
+README.md
+node_modules
+npm-debug.log
