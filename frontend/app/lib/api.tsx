@@ -11,6 +11,16 @@ const api = axios.create({
   },
 });
 
+// Define Comment type that matches backend structure
+export interface Comment {
+  id: number;
+  parent_id: number | null;
+  text: string;
+  upvotes: number;
+  created_at: string;
+  user_id: string;
+}
+
 export const authApi = {
   login: async (email: string, password: string) => {
     const formData = new FormData();
@@ -38,6 +48,27 @@ export const authApi = {
     } else {
       return api.get<User>("/users/me");
     }
+  },
+};
+
+export const commentApi = {
+  getAllComments: () => {
+    return api.get<Comment[]>("/comment");
+  },
+  getNComments: (n: number) => {
+    return api.get<Comment[]>(`/comment/${n}`);
+  },
+  createComment: (text: string, parent_id?: number) => {
+    const token = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("accessToken="))
+      ?.split("=")[1];
+
+    return api.post<Comment>(
+      "/comment",
+      { text, parent_id },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
   },
 };
 

@@ -18,6 +18,7 @@ import { useState, useEffect, useRef } from "react";
 import { Roboto, Inter } from "next/font/google";
 import { motion, AnimatePresence } from "framer-motion";
 import { twMerge } from "tailwind-merge";
+import { commentApi } from "../lib/api";
 
 const robotoFont = Roboto({
   subsets: ["latin"],
@@ -73,17 +74,23 @@ interface CommentProps {
   onClose: () => void;
   comments: Comment[];
   users: User[];
+  onCommentAdded?: (newComment: Comment) => void;
 }
+
+type SortMode = "top" | "newest" | "controversial";
 
 export default function CommentSection({
   isOpen,
   onClose,
   comments,
   users,
+  onCommentAdded,
 }: CommentProps) {
   const [cTree, setCTree] = useState<CommentWithUser[]>([]);
   const [newComment, setNC] = useState("");
   const [replyingTo, setRT] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [sortMode, setSortMode] = useState<SortMode>("top");
 
   const buildCommentTree = () => {
     const usersMap: Record<string, User> = {};
@@ -93,7 +100,7 @@ export default function CommentSection({
 
     const commentsMap: Record<number, CommentWithUser> = {};
 
-    const enhancedComments = comments.map((comment: Comment) => {
+    comments.forEach((comment: Comment) => {
       const commentWithUser = {
         ...comment,
         user: usersMap[comment.user_id] || {
@@ -105,11 +112,10 @@ export default function CommentSection({
         replies: [],
       };
       commentsMap[comment.id] = commentWithUser;
-      return commentWithUser;
     });
 
     const rootComments: CommentWithUser[] = [];
-    enhancedComments.forEach((comment: CommentWithUser) => {
+    Object.values(commentsMap).forEach((comment: CommentWithUser) => {
       if (comment.parent_id === null) {
         rootComments.push(comment);
       } else {
@@ -122,25 +128,47 @@ export default function CommentSection({
       }
     });
 
-    // sort comments by upvotes
-    rootComments.sort((a, b) => b.upvotes - a.upvotes);
+    switch (sortMode) {
+      case "top":
+        rootComments.sort((a, b) => b.upvotes - a.upvotes);
+        break;
+      case "newest":
+        rootComments.sort(
+          (a, b) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
+        break;
+      case "controversial":
+        // comments with close to 0 likes
+        rootComments.sort((a, b) => Math.abs(a.upvotes) - Math.abs(b.upvotes));
+        break;
+    }
 
-    // sort replies by creation date (newer first)
-    Object.values(commentsMap).forEach((comment) => {
-      comment.replies.sort(
-        (a, b) =>
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-      );
-    });
+    const sortRepliesRecursively = (comments: CommentWithUser[]) => {
+      comments.forEach((comment) => {
+        if (comment.replies && comment.replies.length > 0) {
+          comment.replies.sort(
+            (a, b) =>
+              new Date(b.created_at).getTime() -
+              new Date(a.created_at).getTime()
+          );
+          sortRepliesRecursively(comment.replies);
+        }
+      });
+    };
+
+    sortRepliesRecursively(rootComments);
 
     return rootComments;
   };
 
   useEffect(() => {
     if (isOpen) {
+      setIsLoading(true);
       setCTree(buildCommentTree());
+      setIsLoading(false);
     }
-  }, [isOpen, comments, users]);
+  }, [isOpen, comments, users, sortMode]);
 
   /* relative date formatting */
   const getRelativeTime = (dateString: string) => {
@@ -166,11 +194,27 @@ export default function CommentSection({
     return Math.floor(seconds) + " seconds ago";
   };
 
-  const handleSubmitComment = () => {
-    if (newComment.trim()) {
-      alert(`Comment submitted: ${newComment}`);
+  const handleSubmitComment = async () => {
+    if (!newComment.trim()) return;
+
+    try {
+      setIsLoading(true);
+      const response = await commentApi.createComment(
+        newComment,
+        replyingTo || undefined
+      );
+
+      if (onCommentAdded) {
+        onCommentAdded(response.data);
+      }
+
       setNC("");
       setRT(null);
+    } catch (error) {
+      console.error("Error posting comment:", error);
+      alert("Failed to post comment. Please try again later.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -263,8 +307,8 @@ export default function CommentSection({
             </div>
 
             <div className="flex flex-col md:flex-row flex-1 overflow-hidden bg-gradient-to-b from-gray-900/95 to-gray-950/95">
-              <div className="md:w-1/2 md:border-r border-gray-800/50 flex flex-col overflow-hidden">
-                <div className="flex-1 overflow-y-auto custom-scrollbar p-4 sm:p-6 md:p-8">
+              <div className="hidden md:flex md:w-1/2 md:border-r border-gray-800/50 flex-col overflow-hidden">
+                <div className="flex-1 overflow-y-auto custom-scrollbar p-4 sm:p-6 md:p-8 pb-32 md:pb-4">
                   <div className="flex items-center gap-3 sm:gap-4 mb-5 sm:mb-6">
                     <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-gradient-to-br from-emerald-500 to-teal-700 rounded-full p-0.5 shadow-lg shadow-emerald-900/30">
                       <div className="w-full h-full bg-gray-950 rounded-full flex items-center justify-center text-xl sm:text-2xl font-bold">
@@ -360,7 +404,7 @@ export default function CommentSection({
                   </motion.div>
                 </div>
 
-                <div className="p-3 sm:p-4 md:p-6 bg-gray-900/90 backdrop-blur-sm border-t border-gray-800/50 shadow-lg">
+                <div className="hidden md:block p-3 sm:p-4 md:p-6 bg-gray-900/90 backdrop-blur-sm border-t border-gray-800/50 shadow-lg">
                   <div className="flex gap-2 sm:gap-3 items-start">
                     <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-emerald-500 to-teal-700 rounded-full flex-shrink-0 flex justify-center items-center text-base sm:text-lg font-semibold shadow-lg shadow-emerald-900/20">
                       S
@@ -434,7 +478,8 @@ export default function CommentSection({
                 </div>
               </div>
 
-              <div className="md:w-1/2 flex flex-col overflow-hidden border-t md:border-t-0 border-gray-800/50">
+              {/* Comments section - full width on mobile, half width on md screens and up */}
+              <div className="w-full md:w-1/2 flex flex-col overflow-hidden border-t md:border-t-0 border-gray-800/50">
                 <div className="px-4 sm:px-6 py-3 sm:py-4 bg-gray-900/90 border-b border-gray-800/50 flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <h3
@@ -447,21 +492,45 @@ export default function CommentSection({
                     </span>
                   </div>
                   <div className="flex gap-1 sm:gap-2">
-                    <button className="text-xs bg-gray-800 hover:bg-gray-700 text-gray-300 py-1 px-2 sm:px-3 rounded-md transition-colors">
+                    <button
+                      onClick={() => setSortMode("newest")}
+                      className={twMerge(
+                        "text-xs py-1 px-2 sm:px-3 rounded-md transition-colors",
+                        sortMode === "newest"
+                          ? "bg-blue-600 text-white"
+                          : "bg-gray-800 hover:bg-gray-700 text-gray-300"
+                      )}
+                    >
                       Newest
                     </button>
-                    <button className="text-xs bg-gray-800 hover:bg-gray-700 text-gray-300 py-1 px-2 sm:px-3 rounded-md transition-colors">
+                    <button
+                      onClick={() => setSortMode("top")}
+                      className={twMerge(
+                        "text-xs py-1 px-2 sm:px-3 rounded-md transition-colors",
+                        sortMode === "top"
+                          ? "bg-blue-600 text-white"
+                          : "bg-gray-800 hover:bg-gray-700 text-gray-300"
+                      )}
+                    >
                       Top
                     </button>
-                    <button className="text-xs bg-gray-800 hover:bg-gray-700 text-gray-300 py-1 px-3 rounded-md transition-colors">
+                    <button
+                      onClick={() => setSortMode("controversial")}
+                      className={twMerge(
+                        "text-xs py-1 px-3 rounded-md transition-colors",
+                        sortMode === "controversial"
+                          ? "bg-blue-600 text-white"
+                          : "bg-gray-800 hover:bg-gray-700 text-gray-300"
+                      )}
+                    >
                       Controversial
                     </button>
                   </div>
                 </div>
 
                 <div className="flex-1 overflow-y-auto custom-scrollbar">
-                  <div className="space-y-4 sm:space-y-6 p-3 sm:p-6">
-                    {cTree.length === 0 ? (
+                  <div className="space-y-4 sm:space-y-6 p-3 sm:p-6 pb-32">
+                    {isLoading || cTree.length === 0 ? (
                       <div className="flex flex-col items-center justify-center h-40 text-center">
                         <div className="animate-spin h-6 w-6 sm:h-8 sm:w-8 border-2 border-t-transparent border-emerald-500 rounded-full mb-3"></div>
                         <p className="text-sm sm:text-base text-gray-400">
@@ -485,6 +554,65 @@ export default function CommentSection({
                         </motion.div>
                       ))
                     )}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="md:hidden fixed bottom-0 left-0 right-0 p-3 bg-gray-900/95 backdrop-blur-lg border-t border-gray-800/50 shadow-lg z-20">
+              <div className="flex gap-2 items-start">
+                <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-700 rounded-full flex-shrink-0 flex justify-center items-center text-base font-semibold shadow-lg shadow-emerald-900/20">
+                  S
+                </div>
+                <div className="flex-1">
+                  <div className="relative">
+                    <textarea
+                      placeholder={
+                        replyingTo
+                          ? "Write a thoughtful reply..."
+                          : "Add to the discussion..."
+                      }
+                      value={newComment}
+                      onChange={(e) => setNC(e.target.value)}
+                      className="w-full bg-gray-800/80 text-gray-200 rounded-lg p-3 outline-none resize-none h-16 focus:ring-2 focus:ring-emerald-500/50 transition-all pr-10 placeholder-gray-500 shadow-inner shadow-black/10 text-sm"
+                    ></textarea>
+                    <div className="absolute right-2 top-2 flex flex-col gap-2">
+                      <motion.button
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        className="bg-gray-700/70 hover:bg-gray-600/70 p-1.5 rounded-full text-gray-400 hover:text-gray-200 transition-colors"
+                      >
+                        <FaFaceSmile size={14} />
+                      </motion.button>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-between items-center mt-2">
+                    {replyingTo && (
+                      <motion.button
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        onClick={() => setRT(null)}
+                        className="text-gray-400 hover:text-white flex items-center gap-1 py-1 px-2 bg-gray-800/50 hover:bg-gray-700/50 rounded-md text-xs transition-all duration-200"
+                      >
+                        <FaXmark size={10} />
+                        <span>Cancel</span>
+                      </motion.button>
+                    )}
+                    <motion.button
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.97 }}
+                      disabled={!newComment.trim()}
+                      onClick={handleSubmitComment}
+                      className={twMerge(
+                        "bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-3 py-2 rounded-md text-xs font-medium flex items-center gap-1.5 shadow-lg shadow-emerald-900/20 ml-auto transition-all duration-300",
+                        !newComment.trim() &&
+                          "opacity-50 cursor-not-allowed from-gray-700 to-gray-600 shadow-none"
+                      )}
+                    >
+                      <FaPaperPlane size={14} className="text-white/90" />
+                      {replyingTo ? "Reply" : "Comment"}
+                    </motion.button>
                   </div>
                 </div>
               </div>
