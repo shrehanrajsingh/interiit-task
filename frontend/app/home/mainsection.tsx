@@ -10,10 +10,11 @@ import {
 } from "react-icons/fa6";
 import { motion } from "framer-motion";
 import { useAuth } from "../context/authcontext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CommentSection from "./commentsection";
+import { commentApi, Comment } from "../lib/api";
 
-import comments from "../../data/comments.json";
+// Only import users from local JSON, comments will come from API
 import users from "../../data/users.json";
 
 const robotoFont = Roboto({
@@ -23,6 +24,56 @@ const robotoFont = Roboto({
 export default function MainSection() {
   const { user } = useAuth();
   const [showCommentModal, setShowCommentModal] = useState<boolean>(false);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [commentLimit, setCommentLimit] = useState<number>(50); // Initially load 50 comments
+  const [isFullyLoaded, setIsFullyLoaded] = useState<boolean>(false); // Track if all comments are loaded
+
+  const loadAllComments = async () => {
+    setLoading(true);
+    try {
+      const response = await commentApi.getAllComments();
+      setComments(response.data);
+      setIsFullyLoaded(true);
+      setError(null);
+    } catch (err) {
+      console.error("Error fetching all comments:", err);
+      setError("Failed to load all comments");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle new comment added from the CommentSection
+  const handleCommentAdded = (newComment: Comment) => {
+    // Add the new comment to our existing comments
+    setComments((prevComments) => [...prevComments, newComment]);
+  };
+
+  useEffect(() => {
+    const fetchComments = async () => {
+      setLoading(true);
+      try {
+        const response = await commentApi.getNComments(commentLimit);
+        setComments(response.data);
+        setError(null);
+
+        if (response.data.length < commentLimit) {
+          setIsFullyLoaded(true);
+        } else {
+          setIsFullyLoaded(false);
+        }
+      } catch (err) {
+        console.error("Error fetching comments:", err);
+        setError("Failed to load comments");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchComments();
+  }, [commentLimit]);
 
   return (
     <div className="h-full flex flex-col overflow-hidden">
@@ -44,12 +95,33 @@ export default function MainSection() {
       </motion.div>
 
       {showCommentModal && (
-        <CommentSection
-          isOpen={showCommentModal}
-          onClose={() => setShowCommentModal(false)}
-          comments={comments}
-          users={users}
-        />
+        <>
+          <CommentSection
+            isOpen={showCommentModal}
+            onClose={() => setShowCommentModal(false)}
+            comments={comments}
+            users={users}
+            onCommentAdded={handleCommentAdded}
+          />
+          {!isFullyLoaded && !loading && (
+            <div className="fixed bottom-30 left-1/2 transform -translate-x-1/2 z-50">
+              <button
+                onClick={loadAllComments}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-full py-2 px-4 shadow-lg transition-all"
+              >
+                Load All Comments
+              </button>
+            </div>
+          )}
+        </>
+      )}
+
+      {error && (
+        <div className="px-4 sm:px-8 py-2 mt-2">
+          <div className="bg-red-900/30 border border-red-800 rounded-lg p-3 text-red-200 text-sm">
+            {error} - Please try again later.
+          </div>
+        </div>
       )}
 
       <motion.div
@@ -158,7 +230,7 @@ export default function MainSection() {
                     Comment
                   </span>
                   <span className="text-xs bg-gray-700 group-hover:bg-blue-500/20 px-2 py-0.5 rounded-md ml-1 transition-all">
-                    {comments.length}
+                    {loading ? "..." : comments.length}
                   </span>
                 </button>
               </div>
