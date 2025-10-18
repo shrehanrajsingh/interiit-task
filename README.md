@@ -1,6 +1,8 @@
-# Next.js Frontend with FastAPI Backend Integration
+# Social Media Platform with Next.js & FastAPI
 
-This project demonstrates a modern full-stack application that integrates a Next.js frontend with a FastAPI backend. The application features a stylish UI built with Tailwind CSS and Framer Motion animations, along with a robust authentication system using JWT tokens.
+This project demonstrates a modern full-stack social media application that integrates a Next.js frontend with a FastAPI backend. The application features a stylish UI built with Tailwind CSS and Framer Motion animations, along with a robust authentication system using JWT tokens.
+
+![Homepage Screenshot](homepage.png)
 
 ## Project Structure
 
@@ -15,6 +17,15 @@ This project demonstrates a modern full-stack application that integrates a Next
 - **Social Media Style UI**: Post creation, commenting, and user interactions
 - **Profile Management**: User profile viewing and editing
 - **Responsive Design**: Mobile-friendly UI using Tailwind CSS
+
+### Interactive Comment Section
+![Comment Section](homepagecommentsection.png)
+
+### User Authentication Screens
+<div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+  <img src="loginpage.png" width="48%" alt="Login Page">
+  <img src="signuppage.png" width="48%" alt="Signup Page">
+</div>
 
 ## Getting Started
 
@@ -86,16 +97,6 @@ docker-compose -f docker-compose.dev.yml up --build
 
 ```
 
-#### Development Mode
-
-1. Run the development container:
-
-```bash
-docker-compose -f docker-compose.dev.yml up --build
-```
-
-2. Access the application with hot-reloading at http://localhost:3000
-
 ### Manual Setup
 
 1. Install dependencies:
@@ -144,13 +145,18 @@ The backend API will be available at [http://localhost:8000](http://localhost:80
 
 ## API Integration
 
-The frontend connects to the FastAPI backend using axios. The API utilities are organized in the `app/lib/api-utils.ts` file, which includes:
+The frontend connects to the FastAPI backend using axios. The API utilities are organized in the `app/lib/api.tsx` file, which includes:
 
 - Authentication endpoints (login, register, profile)
 - Post management (create, read, update, delete)
 - Comment functionality (add, edit, delete)
 
 The authentication system uses JWT tokens stored in cookies for persistent sessions and protected routes.
+
+### API Architecture
+```
+Frontend (Next.js) <--> API Middleware <--> FastAPI Backend <--> Database
+```
 
 ## Environment Variables
 
@@ -165,3 +171,40 @@ NEXT_PUBLIC_API_URL=http://localhost:8000
 - The project includes fallback sample data in the `data/` directory for development without the backend
 - API calls automatically fallback to sample data if the backend is unavailable
 - Protected routes redirect to login when accessing without authentication
+
+## Key Features
+
+### 🔐 Authentication
+- Secure JWT-based authentication
+- Protected routes and API endpoints
+- User registration and login
+
+### 📱 Modern UI
+- Responsive design works on all devices
+- Dark mode interface
+- Animations powered by Framer Motion
+
+### 🔄 Real-time Interactions
+- Comment sections with sorting options (Top, Newest, Controversial)
+- Upvote/downvote functionality
+- Threaded comment replies
+
+### 🌐 Full-Stack Implementation
+- Next.js frontend with TypeScript
+- FastAPI backend with SQLAlchemy
+- Docker containerization for easy deployment
+
+## Technologies Used
+
+<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+  <img src="https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js">
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript">
+  <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS">
+  <img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI">
+  <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker">
+  <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python">
+</div>
+
+---
+
+Made with ❤️ by The Dev Team
