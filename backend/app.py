@@ -12,8 +12,20 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-SECRET_KEY = "very-secret-key"
-ALGORITHM = "HS256"
+env = {}
+try:
+    with open('.env', 'r') as f:
+        d = f.read().splitlines()
+        print(d)
+except:
+    env = {
+        'SECRET_KEY': 'very-secret-key',
+        'ALGORIHTM': 'HS256'
+    }
+
+
+SECRET_KEY = env['SECRET_KEY']
+ALGORITHM = env['ALGORIHTM']
 ACCESS_TOKEN_EXPIRE_MINUTES = 60  # expire after 1 hour
 
 origins = [
