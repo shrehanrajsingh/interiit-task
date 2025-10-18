@@ -29,6 +29,11 @@ This project demonstrates a modern full-stack social media application that inte
 
 ## Getting Started
 
+For logging in you can create an account or use the following  credentials.   
+Email: shrehanofficial@gmail.com  
+Password: 123456
+
+
 ### Prerequisites
 
 - Node.js 18+ (or Docker)
