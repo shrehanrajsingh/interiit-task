@@ -116,8 +116,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
 def seed_comments():
-    COMMENTS_FILE_PATH = os.path.join(os.path.dirname(
-        os.path.dirname(__file__)), 'frontend', 'data', 'comments.json')
+    COMMENTS_FILE_PATH = './comments.json'
     engine = create_engine("sqlite:///./test.db",
                            connect_args={"check_same_thread": False})
     SessionLocal = sessionmaker(bind=engine)
